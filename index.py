@@ -11,7 +11,7 @@ from pywinauto.keyboard import send_keys
 
 #Music Records etc
 songs_list =  os.listdir(r'C:\Users\jonat\Music\Latest Songs')
-database = {}
+#database = {'key',[file_name, path, Tag, ]}
 for i in songs_list:
     print(i)
     for j in search(i, tld="co.in", num=10, stop=10, pause=2):
