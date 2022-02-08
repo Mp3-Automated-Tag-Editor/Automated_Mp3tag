@@ -1,0 +1,2 @@
+"""CREATE TABLE IF NOT EXISTS
+MUSIC( key INTEGER PRIMARY KEY, file_name TEXT, tag TEXT, title TEXT, artist TEXT, album TEXT, year NUMBER, track NUMBER, genre TEXT, comment TEXT, album_artist TEXT, composer TEXT, discno NUMBER, album_art TEXT)"""

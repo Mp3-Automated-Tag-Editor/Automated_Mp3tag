@@ -14,12 +14,12 @@ import data_scraper
 #Music Records etc
 songs_list =  os.listdir(r'C:\Users\jonat\Music\Latest Songs')
 #database = {'key',[file_name, path, Tag, ]}
-for i in songs_list:
-    print(i)
-    for j in search("wikipedia "+i, tld="co.in", num=20, stop=20, pause=2):
-        print(j)
-    print("wikipedia "+i)
-    print()
+#for i in songs_list:
+    #print(i)
+    #for j in search("wikipedia "+i, tld="co.in", num=20, stop=20, pause=2):
+    #    print(j)
+    #print("wikipedia "+i)
+    #print()
 
 #Database Creation, Format: 
 #{'Sl no. (Key)',[file_name, path, Tag, Title, Artist, Album, Year, Track, Genre, Comment, Album Artist, Composer, Discnumber, album art jpg file]}
