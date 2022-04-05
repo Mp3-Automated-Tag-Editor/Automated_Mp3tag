@@ -1,0 +1,22 @@
+Shivansh:
+ - Title Generator (Get Title and Artist from file name, store in DB)
+ - Regex to detect patterns 
+    -- Patterns available within given DB --
+    - 5 Seconds of Summer - Amnesia (Official Video).mp3
+    - for KING & COUNTRY - Ceasefire - Music Video.mp3
+    - Jack Garratt - Surprise Yourself.mp3
+    - y2mate.com - all_sons_daughters_great_are_you_lord_official_live_concert_uHz0w-HG4iU_256kbps.mp3
+    - Y2Mate.is - Arctic Monkeys - No 1 Party Anthem Lyric Video-pE8mWOgMpP8-160k-1641641934769.mp3
+    - [YT2mp3.info] - Arctic Monkeys - Do I Wanna Know_ (Official Video) (320kbps).mp3
+    -- Go through Sample Set to find other patterns
+
+Jonathan 
+    - Data Scraper (Use Title + Artist for metadata retrieval, put in DB)
+        - Direct Google Search 
+        - Wikipedia 
+        - Google Images 
+    - MP3 Automation Element (Place Data in fields for each song, iterate through rows of DB; place metadata in each song)
+    - Final Product Delivery 
+        - GUI 
+        - Testing Parameters (Based on Test Case Scenarios)
+

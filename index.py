@@ -6,13 +6,13 @@ from googlesearch import search
 import os
 from pywinauto.application import Application
 from pywinauto.keyboard import send_keys
-import data_scraper
+#import data_scraper
 
 #app = Application(backend='uia').start(r"C:\Program Files (x86)\Mp3tag\Mp3tag.exe").connect(title=r'Mp3tag v3.03 - C:\Users\jonat\Music\Latest Songs',timeout=100)
 
 
 #Music Records etc
-songs_list =  os.listdir(r'C:\Users\jonat\Music\Latest Songs')
+songs_list =  os.listdir(r'C:/Users/jonat/Music/Latest Songs')
 #database = {'key',[file_name, path, Tag, ]}
 #for i in songs_list:
     #print(i)
@@ -39,6 +39,8 @@ for i in songs_list:
     cursor.execute("INSERT INTO MUSIC values (?, ?, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL)",(count, i))
 print()
 
-cursor.execute("SELECT file_name FROM MUSIC WHERE key = 58")
-results = cursor.fetchall()
-print(results)
+results = cursor.execute("SELECT * FROM MUSIC")
+for row in results:
+    print(row)
+#print(results,"\n")
+print(count)
