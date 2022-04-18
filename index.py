@@ -33,14 +33,50 @@ cursor.execute(command1)
 count = 0
 for i in songs_list:
     count+=1
-    #print(i)
-    #for j in search(i, tld="co.in", num=10, stop=10, pause=2):
-        #print(j)
     cursor.execute("INSERT INTO MUSIC values (?, ?, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL)",(count, i))
 print()
 
 results = cursor.execute("SELECT * FROM MUSIC")
 for row in results:
     print(row)
-#print(results,"\n")
 print(count)
+
+#import title_generator
+
+import re
+import os
+
+counter = 0
+for i in range(1,count):
+    fname = cursor.execute("SELECT file_name FROM MUSIC WHERE key = %d", (i))
+    #fname = "[YT2mp3.info] - Arctic Monkeys - Do I Wanna Know_ (Official Video) (320kbps).mp3"
+    c = 0
+    song = fname.split(" - ")[c]
+    if(".is" in (song) or ".com" in (song) or ".info" in (song)):
+        c += 1
+        song = fname.split("-")[c]
+    artist = os.path.splitext("".join(fname.split(" - ")[c+1:]))[0]
+    idx = artist.rfind("Official")
+    artist = artist[0:idx]
+    idx = artist.rfind("Music")
+    artist = artist[0:idx]
+    idx = artist.rfind("Lyric")
+    artist = artist[0:idx]
+    if(len(song) == 0):
+        song = artist
+
+    print("song:- " + song)
+    print("artist:- "+artist)
+
+
+    cursor.execute("INSERT INTO MUSIC (title, artist) VALUES (?, ?)", (song, artist))
+
+    #print(mycursor.rowcount, "record inserted. successfully")
+
+for row in results:
+    print(row)
+print(count)
+
+#import data_scraper
+
+#import automation_script
