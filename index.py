@@ -1,39 +1,35 @@
+from click import group
 from pywinauto import application
-import pywinauto
-import time
 import sqlite3
 from googlesearch import search
 import os
 from pywinauto.application import Application
 from pywinauto.keyboard import send_keys
-#import data_scraper
 
-#app = Application(backend='uia').start(r"C:\Program Files (x86)\Mp3tag\Mp3tag.exe").connect(title=r'Mp3tag v3.03 - C:\Users\jonat\Music\Latest Songs',timeout=100)
-
+cli_ID = "e7ed7bbc0a5f4a7db0223a507f48be9a"
+cli_se = "bf5d451b496b47d795fdf6b5d556ea75"
 
 #Music Records etc
-songs_list =  os.listdir(r'C:/Users/jonat/Music/Latest Songs')
-#database = {'key',[file_name, path, Tag, ]}
-#for i in songs_list:
-    #print(i)
-    #for j in search("wikipedia "+i, tld="co.in", num=20, stop=20, pause=2):
-    #    print(j)
-    #print("wikipedia "+i)
-    #print()
+#Create options for choosing directory
+fdir = r'C:/Users/jonat/Music/Latest Songs'
+songs_list =  os.listdir(fdir)
 
 #Database Creation, Format: 
 #{'Sl no. (Key)',[file_name, path, Tag, Title, Artist, Album, Year, Track, Genre, Comment, Album Artist, Composer, Discnumber, album art jpg file]}
 connection  = sqlite3.connect('Music_database.db')
 cursor = connection.cursor()
 
+cursor.execute("DROP TABLE IF EXISTS MUSIC")
 command1 = """CREATE TABLE IF NOT EXISTS
-MUSIC( key INTEGER PRIMARY KEY, file_name TEXT, tag TEXT, title TEXT, artist TEXT, album TEXT, year NUMBER, track NUMBER, genre TEXT, comment TEXT, album_artist TEXT, composer TEXT, discno NUMBER, album_art TEXT)"""
+MUSIC( key INTEGER PRIMARY KEY, file_name TEXT, path TEXT, title TEXT, artist TEXT, album TEXT, year NUMBER, track NUMBER, genre TEXT, comment TEXT, album_artist TEXT, composer TEXT, discno NUMBER, album_art TEXT)"""
 cursor.execute(command1)
 
 count = 0
 for i in songs_list:
     count+=1
-    cursor.execute("INSERT INTO MUSIC values (?, ?, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL)",(count, i))
+    complete_path = f"{fdir}/{i}"
+    print(complete_path)
+    cursor.execute("INSERT INTO MUSIC values (?, ?, ?, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL)",(count, i, complete_path))
 print()
 
 results = cursor.execute("SELECT * FROM MUSIC")
@@ -45,17 +41,26 @@ print(count)
 
 import re
 import os
+import data_scraper_final
+
+def convertTuple(tup):
+    str = ''
+    for item in tup:
+        str = str + item
+    return str
 
 counter = 0
 for i in range(1,count):
-    fname = cursor.execute("SELECT file_name FROM MUSIC WHERE key = %d", (i))
-    #fname = "[YT2mp3.info] - Arctic Monkeys - Do I Wanna Know_ (Official Video) (320kbps).mp3"
+    query = f"SELECT file_name FROM MUSIC WHERE key = {i}"
+    fname = cursor.execute(query)
     c = 0
-    song = fname.split(" - ")[c]
+    for x in fname:
+        x = convertTuple(x)
+    song = x.split(" - ")[c]
     if(".is" in (song) or ".com" in (song) or ".info" in (song)):
         c += 1
-        song = fname.split("-")[c]
-    artist = os.path.splitext("".join(fname.split(" - ")[c+1:]))[0]
+        song = x.split("-")[c]
+    artist = os.path.splitext("".join(x.split(" - ")[c+1:]))[0]
     idx = artist.rfind("Official")
     artist = artist[0:idx]
     idx = artist.rfind("Music")
@@ -65,18 +70,20 @@ for i in range(1,count):
     if(len(song) == 0):
         song = artist
 
-    print("song:- " + song)
-    print("artist:- "+artist)
+    #print("Song: " + artist)
+    #print("Artist: "+ song)
 
+    command2 = f"{artist} {song}"
+    art, album , song_name, albumart, status = data_scraper_final.get_metadata(command2, cli_ID, cli_se,i)
+    #print(art,album,song_name, albumart)
+    #query = 
+    #print(query)
+    cursor.execute(f"UPDATE MUSIC SET title = ? , artist = ? , album = ? , album_art = ?  WHERE key = {i}",(song_name, art, album, albumart))
+    #print(cursor.rowcount, f"Record inserted, {status}")
 
-    cursor.execute("INSERT INTO MUSIC (title, artist) VALUES (?, ?)", (song, artist))
-
-    #print(mycursor.rowcount, "record inserted. successfully")
-
+results = cursor.execute("SELECT * FROM MUSIC")
 for row in results:
     print(row)
 print(count)
 
-#import data_scraper
-
-#import automation_script
+import automation_script
