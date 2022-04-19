@@ -1,3 +1,4 @@
+import imp
 from click import group
 from pywinauto import application
 import sqlite3
@@ -5,6 +6,7 @@ from googlesearch import search
 import os
 from pywinauto.application import Application
 from pywinauto.keyboard import send_keys
+from tqdm import tqdm
 
 cli_ID = "e7ed7bbc0a5f4a7db0223a507f48be9a"
 cli_se = "bf5d451b496b47d795fdf6b5d556ea75"
@@ -28,7 +30,7 @@ count = 0
 for i in songs_list:
     count+=1
     complete_path = f"{fdir}/{i}"
-    print(complete_path)
+    #print(complete_path)
     cursor.execute("INSERT INTO MUSIC values (?, ?, ?, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL)",(count, i, complete_path))
 print()
 
@@ -37,11 +39,8 @@ for row in results:
     print(row)
 print(count)
 
-#import title_generator
-
-import re
-import os
 import data_scraper_final
+import title_generator
 
 def convertTuple(tup):
     str = ''
@@ -50,40 +49,42 @@ def convertTuple(tup):
     return str
 
 counter = 0
-for i in range(1,count):
+for i in tqdm(range(1,count)):
     query = f"SELECT file_name FROM MUSIC WHERE key = {i}"
     fname = cursor.execute(query)
-    c = 0
     for x in fname:
         x = convertTuple(x)
-    song = x.split(" - ")[c]
-    if(".is" in (song) or ".com" in (song) or ".info" in (song)):
-        c += 1
-        song = x.split("-")[c]
-    artist = os.path.splitext("".join(x.split(" - ")[c+1:]))[0]
-    idx = artist.rfind("Official")
-    artist = artist[0:idx]
-    idx = artist.rfind("Music")
-    artist = artist[0:idx]
-    idx = artist.rfind("Lyric")
-    artist = artist[0:idx]
-    if(len(song) == 0):
-        song = artist
+    
+    song,artist = title_generator.regex_title_gen(x)
 
-    #print("Song: " + artist)
-    #print("Artist: "+ song)
+    #print("Song: " + song)
+    #print("Artist: "+ artist)
 
-    command2 = f"{artist} {song}"
+    command2 = f"{song} {artist}"
     art, album , song_name, albumart, status = data_scraper_final.get_metadata(command2, cli_ID, cli_se,i)
     #print(art,album,song_name, albumart)
-    #query = 
-    #print(query)
     cursor.execute(f"UPDATE MUSIC SET title = ? , artist = ? , album = ? , album_art = ?  WHERE key = {i}",(song_name, art, album, albumart))
     #print(cursor.rowcount, f"Record inserted, {status}")
+
+    query = f"SELECT path FROM MUSIC WHERE key = {i}"
+    fname = cursor.execute(query)
+    for x2 in fname:
+        x2 = convertTuple(x2)
+
+    #data_scraper_final.revert_metadata(x2) #mutagen.mp3.HeaderNotFoundError: can't sync to MPEG frame ERROR
+    ret2 = 1
+    ret = data_scraper_final.add_metadata(x2, song_name, art, album)
+    ret2 = data_scraper_final.add_album_art(x2, albumart, i)
+    if ret == 0 or ret2 == 0:
+        continue
+
+    print(x2)
 
 results = cursor.execute("SELECT * FROM MUSIC")
 for row in results:
     print(row)
 print(count)
 
-import automation_script
+#import automation_script
+
+os.startfile(fdir)

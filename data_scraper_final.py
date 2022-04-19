@@ -44,53 +44,6 @@ def improve_name(song_name):
 
     return song_name.strip()
 
-def get_song_urls(song_input):
-    """
-    Gather all urls, titles for a search query
-    from youtube
-    """
-    YOUTUBECLASS = 'spf-prefetch'
-
-    html = requests.get("https://www.youtube.com/results",
-                        params={'search_query': song_input})
-    soup = BeautifulSoup(html.text, 'html.parser')
-
-    soup_section = soup.findAll('a', {'rel': YOUTUBECLASS})
-
-    # Use generator over list, since storage isn't important
-    song_urls = ('https://www.youtube.com' + i.get('href')
-                 for i in soup_section)
-    song_titles = (i.get('title') for i in soup_section)
-
-    youtube_list = list(zip(song_urls, song_titles))
-
-    del song_urls
-    del song_titles
-
-    return youtube_list
-
-
-def download_song(song_url, song_title):
-    """
-    Download a song using youtube url and song title
-    """
-
-    outtmpl = song_title + '.%(ext)s'
-    ydl_opts = {
-        'format': 'bestaudio/best',
-        'outtmpl': outtmpl,
-        'postprocessors': [
-            {'key': 'FFmpegExtractAudio','preferredcodec': 'mp3',
-             'preferredquality': '192',
-            },
-            {'key': 'FFmpegMetadata'},
-        ],
-    }
-
-    with youtube_dl.YoutubeDL(ydl_opts) as ydl:
-        info_dict = ydl.extract_info(song_url, download=True)
-
-
 def get_metadata(file_name, client_id, client_secret, fno):
     """
     Tries finding metadata through Spotify
@@ -115,51 +68,73 @@ def get_metadata(file_name, client_id, client_secret, fno):
 
     return artist, album, song_title, album_art, status
 
-
-def add_album_art(file_name, album_art):
+import image_downloader
+def add_album_art(file_name, album_art,fno):
     """
     Add album_art in .mp3's tags
     """
+    #print(file_name,album_art)
+    if album_art == None or album_art == 0:
+        print("Error: No Album Art")
+        return 0
 
-    img = requests.get(album_art, stream=True)  # Gets album art from url
-    img = img.raw
+    com_path = image_downloader.download(album_art,f"{fno}.jpg")
 
-    audio = EasyMP3(file_name, ID3=ID3)
-
+    
+    
     try:
+        audio = EasyMP3(file_name, ID3=ID3)
         audio.add_tags()
-    except _util.error:
-        pass
-
-    audio.tags.add(
+    
+        print("Error")
+        audio.tags.add(
         APIC(
             encoding=3,  # UTF-8
             mime='image/png',
             type=3,  # 3 is for album art
             desc='Cover',
-            data=img.read()  # Reads and adds album art
+            data=open(com_path).read()  # Reads and adds album art
+            )
+        )   
+        audio.save()
+        print("Successfull")
+    except _util.error:
+        pass
+    
+    """audio.tags.add(
+    APIC(
+        encoding=3,  # UTF-8
+        mime='image/png',
+        type=3,  # 3 is for album art
+        desc='Cover',
+        data=open(com_path).read()  # Reads and adds album art
         )
     )
     audio.save()
+    print("Successfull")"""
+ 
+    return 1
 
-    return album_art
 
 
 def add_metadata(file_name, title, artist, album):
     """
     As the method name suggests
     """
+    try:
+        tags = EasyMP3(file_name)
+        if title: 
+            tags["title"] = title
+        if artist:     
+            tags["artist"] = artist
+        if album:
+            tags["album"] = album
+        tags.save()
+    except:
+        print("Error: ",file_name)
     
-    tags = EasyMP3(file_name)
-    if title: 
-        tags["title"] = title
-    if artist:     
-        tags["artist"] = artist
-    if album:
-        tags["album"] = album
-    tags.save()
+    return 1
 
-    return file_name
 
 def get_current_metadata_tag(file_name, tag):
     tags = EasyMP3(file_name)
@@ -169,12 +144,14 @@ def get_current_metadata_tag(file_name, tag):
         return "The metadata tag could not be found."
 
 
-def revert_metadata(files):
+def revert_metadata(file_path):
     """
     Removes all tags from a mp3 file
     """
-    for file_path in files:
-        tags = EasyMP3(file_path)
+    tags = EasyMP3(file_path)
+    try:
         tags.delete()
-        tags.save()
+    except:
+        print("The metadata tag could not be found.") 
+    tags.save()
 
