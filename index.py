@@ -1,4 +1,5 @@
 import imp
+import shutil
 from click import group
 from pywinauto import application
 import sqlite3
@@ -10,6 +11,7 @@ from tqdm import tqdm
 
 cli_ID = "e7ed7bbc0a5f4a7db0223a507f48be9a"
 cli_se = "bf5d451b496b47d795fdf6b5d556ea75"
+acc_cnt = 0
 
 #Music Records etc
 #Create options for choosing directory
@@ -64,7 +66,7 @@ for i in tqdm(range(1,count)):
     art, album , song_name, albumart, status = data_scraper_final.get_metadata(command2, cli_ID, cli_se,i)
     #print(art,album,song_name, albumart)
     cursor.execute(f"UPDATE MUSIC SET title = ? , artist = ? , album = ? , album_art = ?  WHERE key = {i}",(song_name, art, album, albumart))
-    #print(cursor.rowcount, f"Record inserted, {status}")
+    print(cursor.rowcount, f"Record inserted, {status}")
 
     query = f"SELECT path FROM MUSIC WHERE key = {i}"
     fname = cursor.execute(query)
@@ -76,7 +78,8 @@ for i in tqdm(range(1,count)):
     ret = data_scraper_final.add_metadata(x2, song_name, art, album)
     ret2 = data_scraper_final.add_album_art(x2, albumart, i)
     if ret == 0 or ret2 == 0:
-        continue
+        shutil.move(x2, "C:/Users/jonat/Music/Latest Songs-Incomplete/")
+        acc_cnt += 1
 
     print(x2)
 
@@ -88,3 +91,5 @@ print(count)
 #import automation_script
 
 os.startfile(fdir)
+accuracy = (count-acc_cnt)/count*100
+print("Final Classifier Accuracy: ",accuracy,"%")

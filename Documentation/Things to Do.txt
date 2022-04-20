@@ -9,14 +9,34 @@ Shivansh:
     - Y2Mate.is - Arctic Monkeys - No 1 Party Anthem Lyric Video-pE8mWOgMpP8-160k-1641641934769.mp3
     - [YT2mp3.info] - Arctic Monkeys - Do I Wanna Know_ (Official Video) (320kbps).mp3
     -- Go through Sample Set to find other patterns
+    - GUI
+
 
 Jonathan 
     - Data Scraper (Use Title + Artist for metadata retrieval, put in DB)
         - Direct Google Search 
         - Wikipedia 
         - Google Images 
+        - Shazam
+        -
+        -
+        - etc.
+        - <i class="fa fa-spotify" aria-hidden="true"></i>
     - MP3 Automation Element (Place Data in fields for each song, iterate through rows of DB; place metadata in each song)
     - Final Product Delivery 
         - GUI 
         - Testing Parameters (Based on Test Case Scenarios)
+
+Algorithm Used: (For Classification of Data mined data) Naive Bayes - Assumes all answers carry same weightage.
+
+Items to Implement for the Future:
+- Other data sources
+- Multithreading for improved performance
+- Testing - V Model (At every stage of development) + Selenium
+
+Things left to do (20.04.2022): 
+ - Addition of Album Art: Done
+ - Clean GUI
+ - Export Completed files to another album
+ - Genre/Other metadata: Done (Automatically)
 

@@ -15,36 +15,60 @@
 from mutagen.id3 import ID3, APIC, _util
 from mutagen.mp3 import EasyMP3
 import requests
-from PIL import Image
-
-def add_album_art(file_name, album_art):
+import eyed3
+import image_downloader
+def add_album_art(file_name, album_art, fno):
     """
     Add album_art in .mp3's tags
     """
-
-    print(file_name,album_art)
+    # print(file_name,album_art)
     if album_art == None or album_art == 0:
         print("Error: No Album Art")
         return 0
-    img = requests.get(album_art, stream=True)  # Gets album art from url
-    img = img.raw
-    print(img)
 
-    audio = EasyMP3(file_name, ID3=ID3)
+    com_path = image_downloader.download(album_art, f"{fno}.jpg")
+    # 204/365 = 55.89% success rate - CAn be implemented
 
+    audiofile = eyed3.load(file_name)
+
+
+    if (audiofile.tag == None):
+        audiofile.initTag()
+    audiofile.tag.images.set(3, open(com_path, 'rb').read(), 'image/jpeg')
+    print(audiofile.tag.images)
+    audiofile.tag.save(version=eyed3.id3.ID3_V2_3)            
+    print("Successfull")
+    
     try:
+        """audio = EasyMP3(file_name, ID3=ID3)
         audio.add_tags()
-    except _util.error:
-        pass
 
-    audio.tags.add(
+        print("Error")
+        audio.tags.add(
         APIC(
             encoding=3,  # UTF-8
             mime='image/png',
             type=3,  # 3 is for album art
             desc='Cover',
-            data=img.read()  # Reads and adds album art
+            data=open(com_path).read()  # Reads and adds album art
+            )
+        )
+        audio.save()"""
+
+        
+    except _util.error:
+        pass
+    
+    """audio.tags.add(
+    APIC(
+        encoding=3,  # UTF-8
+        mime='image/png',
+        type=3,  # 3 is for album art
+        desc='Cover',
+        data=open(com_path).read()  # Reads and adds album art
         )
     )
     audio.save()
+    print("Successfull")"""
+ 
     return 1
