@@ -1,13 +1,43 @@
-from tkinter import Tk
+from tkinter import *
+import tkinter.font as tkFont
+from tkinter import ttk
 from tkinter import filedialog
 import os
+master = Tk()
+master.title("AUTOMATED MP3 TAG EDITOR ")
 
-root = Tk()
-root.withdraw()
 
-current_directory = filedialog.askdirectory()
-file_name = "test.txt"
 
-file_path = os.path.join(current_directory,file_name)
+def var_states():
+   print("SELECTED  OPTIONS: %d,\nfemale: %d" % (var1.get(), var2.get(),var3.get()))
+def openNewWindow():
+  newWindow = ('test_gui1.py')
+  
+def select_directory():
+  path= filedialog.askopenfilename(title="Select a File", filetype=(('text files''.txt'),('all files','.*')))
+  
+ 
+def run_program():
+  import test_gui1
+    #os.system('test_gui1.py')
+ 
 
-print(file_path)
+fontStyle=tkFont.Font(family="Lucida Grande",size=12)
+
+#filename = PhotoImage(file = 'ABC.png')
+#image = canvas.create_image(50, 50, anchor=NE, image=filename)
+Button(master, text="SELECT DIRECTORY",command =select_directory ,height=5,width=100, font=fontStyle,borderwidth=3,relief='solid', background="gray74").grid(row=0,column=5,pady=50,padx=50,columnspan=4)
+C = Canvas(master, bg="white",
+           height=250, width=300)
+line = C.create_line(0,30,50,30,fill="green")
+var1 = IntVar()
+Checkbutton(master,height=3,width=50, text="HIGH RESOLUTION IMAGE", variable=var1,borderwidth=3,relief='solid').grid(row=1,column=5, sticky=W,padx=20,pady=10)
+var2 = IntVar()
+Checkbutton(master,height=3,width=50,  text="DISPLAY FAILED ATTEMPTS/RESULTS", variable=var2,borderwidth=3,relief='solid').grid(row=2,column=5, sticky=W,padx=20,pady=10)
+var3 = IntVar()
+Checkbutton(master,height=3,width=50,  text="ENABLE RANKED BASED MINING OF SONGS", variable=var3,borderwidth=3,relief='solid').grid(row=3,column=5, sticky=W,padx=20,pady=10)
+
+
+Button(master, text='START', command=var_states,borderwidth=3,relief='solid').grid(row=8,column=1, sticky=W, pady=40,padx=30)
+Button(master, text='ADVANCED OPTION', command=var_states,borderwidth=3,relief='solid').grid(row=8,column=7, sticky=W, pady=40,padx=30)
+mainloop()
