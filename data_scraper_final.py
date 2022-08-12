@@ -70,12 +70,19 @@ def get_metadata(file_name, client_id, client_secret, fno):
         artist = results['album']['artists'][0]['name']
         song_title = results['name']
         album_art = results['album']['images'][0]['url']
+        
         status = "successfully"
     except:
         print("Error Occured: Fno: ", fno, " - Data nulled")
         artist = album = song_title = album_art = NULL
         # count()
         status = "However metadata Scrape failed (Error Code: 1)"
+
+    
+    genre = album["genres"]
+    year = album["release_date"]
+    print(year)
+    print(genre)
 
     return artist, album, song_title, album_art, status
 
