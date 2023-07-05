@@ -1,5 +1,5 @@
-# Automated_Mp3tag
-Automated Mp3 Tag Editor using Data Scraping, Data Aggregation and Data Mining, to retreive metadata for a given song.
+# Automated Mp3 Tag Editor via Data Mining: A Classification Software for Predicting Mp3 Metadata
+### An Automated Mp3 Tag Editor using Data Scraping, Data Aggregation and Data Mining, to retreive metadata for a given song.
 
 CSE3001 - ETJ Project (Winter Semester 2021-22)
 Authors: Jonathan Rufus Samuel (20BCT0332), Shivansh Sahai (20BCT0236), Dr. Swarnlatha P
@@ -29,3 +29,17 @@ metadata is then applied to the required songs along with
 appropriate cover art. The Pert Diagram shown above
 best describes the thought process behind the given
 Project.
+
+Demonstration Link: [https://youtu.be/coYtrDU7lqY](https://youtu.be/coYtrDU7lqY)
+
+Projected Release Date: June, 2023 | Copyright: © 2023 |Pages: 310 <br>
+DOI: 10.4018/978-1-6684-8098-4 <br>
+DOI URL: [https://doi.org/10.4018/978-1-6684-8098-4.ch012](https://doi.org/10.4018/978-1-6684-8098-4.ch012) <br>
+ISBN13: 9781668480984|ISBN10: 1668480980|EISBN13: 9781668481004|ISBN13 Softcover: 9781668480991 <br>
+
+### List of Things to be Added (For Further Releases):
+- [ ] GUI change from Python to React based Electron JS GUI
+- [ ] Add Power Automate Scraping Vector
+- [ ] Make Download Site for the same
+- [ ] Improve Documentation
+- [ ] Add Code of Conduct for Contributing
